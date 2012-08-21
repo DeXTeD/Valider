@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pl">
+<head>
+	<meta charset="utf-8">
+	<title>Valider Example</title>
+	<style>
+		div {
+			padding: 10px;
+		}
+		.input-error {
+			box-shadow: 0 0 10px red;
+		}
+		select {
+			padding: 3px 10px;
+		}
+		.error {
+			display: inline-block;
+			vertical-align: middle;
+			background: #E95858;
+			color: #370000;
+			border-radius: 2px;
+			padding: 4px 10px;
+			font-size: 13px;
+			margin-left: 5px;
+			white-space: nowrap;
+		}
+	</style>
+</head>
+<body>
+
+	<form action="?">
+		<div>
+			E-mail: <input type="email" name="email">
+		</div>
+		<div>
+			Kod: <input type="text" name="code" pattern="[01]+" required="required" data-name="kod"> <small>np. 101010</small>
+		</div>
+		<div>
+			Treść: <textarea name="content" required="required"></textarea>
+		</div>
+		<div>
+			Kategoria:
+			<select name="category" required="required">
+				<option value="">-</option>
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+			</select>
+		</div>
+		<div>
+			Regulamin:
+			<input type="checkbox" name="typek" value="1" required="required" data-message="Zaakceptuj regulamin">
+		</div>
+		<div>
+			Twórca: (TODO)<br>
+			<label>Ja <input type="radio" name="creator" value="1"></label>
+			<label>Ktoś inny <input type="radio" name="creator" value="2"></label>
+		</div>
+		<div>
+			Cena: <input type="number" name="cena" min="0" max="100">
+		</div>
+		<div>
+			<input type="reset">
+			<button>Save</button>
+		</div>
+	</form>
+
+
+<script src="js/libs.js"></script>
+<script src="js/valider.js"></script>
+<script>
+
+$('form').Valider({
+	onErrors: function(errors) {
+		// Nothing
+	},
+	onInputError: function(error) {
+		this.addClass('input-error');
+		var next = this.next('.error');
+		if(next.size())
+			next.text(error);
+		else {
+			var info = $('<span class="error">'+error+'</span>').hide();
+			this.after(info);
+			info.show('fast');
+		}
+	},
+	onInputPass: function() {
+		this.removeClass('input-error');
+		this.next('.error').hide('fast', function() {
+			$(this).remove();
+		});
+	}
+});
+
+</script>
+</body>
+</html>
