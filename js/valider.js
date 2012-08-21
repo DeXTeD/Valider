@@ -56,12 +56,22 @@
 		},
 
 		errors: {
+			en: {
+				'*'					: 'Incorrect value',
+				'[required]'		: 'Field :name is required',
+				':email'			: 'Invalid email address',
+				':number'			: 'Value must be a number',
+				':url'				: 'Invalid URL',
+				'[max]'				: 'The maximum value is :max (min: min)',
+				'[min]'				: 'The minimum value is :min (max: max)',
+				'[data-equals]'		: 'The value is not the same as the field :equals'
+			},
 			pl: {
 				'*'					: 'Niepoprawna wartość',
 				'[required]'		: 'Pole ":name" jest wymagane',
 				':email'			: 'Błędny adres e-mail',
 				':number'			: 'Wartość musi być liczbą',
-				':url'				: 'Niepoprawny adres',
+				':url'				: 'Niepoprawny adres WWW',
 				'[max]'				: 'Maksymalna wartość to :max (minimalna :min)',
 				'[min]'				: 'Minimala wartość to :min (maksymalna :max)',
 				'[data-equals]'		: 'Wartość nie jest taka sama jak pole :equals'
@@ -76,6 +86,7 @@
 					'name': input.data('name') || input.attr('name'),
 					'val': _.escape(input.val()),
 					'min': input.attr("min"),
+					'equals': input.data("equalsName"),
 					'max': input.attr("max")
 				};
 
@@ -138,6 +149,10 @@
 			},
 			'[pattern]': function(input, val) {
 				return val === '' || new RegExp("^" + input.attr("pattern") + "$").test(val);
+			},
+			'[data-equals]': function(input, val) {
+				var input2 = this.form.find('[name='+input.data('equals')+']');
+				return val === input2.val();
 			}
 		},
 
