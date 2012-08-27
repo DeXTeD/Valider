@@ -5,7 +5,7 @@
  * @license MIT
  */
 
-(function($){
+(function(window, document, $, undefined){
 	"use strict";
 
 	// Add HTML5 input types
@@ -54,9 +54,6 @@
 
 		regex: {
 			'number': /^-?[0-9]*(\.[0-9]+)?$/,
-			// 'zipcode': /^\d+[0-9\-]+\d+?$/,
-			// 'letters': /^[a-zA-Z]*$/,
-			// 'city': /^[A-Za-z. '-]+$/,
 			'email': /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/,
 			'url': /https?:\/\/([_a-z\d\-]+(\.[_a-z\d\-]+)+)(([_a-z\d\-\\\.\/]+[_a-z\d\-\\\/])+)*/
 		},
@@ -68,8 +65,8 @@
 				':email'			: 'Invalid email address',
 				':number'			: 'Value must be a number',
 				':url'				: 'Invalid URL',
-				'[max]'				: 'The maximum value is :max (min: min)',
-				'[min]'				: 'The minimum value is :min (max: max)',
+				'[max]'				: 'The maximum value is :max',
+				'[min]'				: 'The minimum value is :min',
 				'[data-equals]'		: 'The value is not the same as the field :equals'
 			},
 			pl: {
@@ -78,16 +75,16 @@
 				':email'			: 'Błędny adres e-mail',
 				':number'			: 'Wartość musi być liczbą',
 				':url'				: 'Niepoprawny adres WWW',
-				'[max]'				: 'Maksymalna wartość to :max (minimalna :min)',
-				'[min]'				: 'Minimala wartość to :min (maksymalna :max)',
+				'[max]'				: 'Maksymalna wartość to :max',
+				'[min]'				: 'Minimala wartość to :min',
 				'[data-equals]'		: 'Wartość nie jest taka sama jak pole :equals'
 			}
 		},
 
 		getError: function(key, input) {
 
-			// Attributes for replace :names
-			var error = '',
+			var error = input.data('message'),
+				// Attributes for replace :names
 				attrs = {
 					'name': input.data('name') || input.attr('name'),
 					'val': input.val(),
@@ -96,26 +93,28 @@
 					'max': input.attr("max")
 				};
 
-			// Input has its own message
-			if(input.data('message')) {
-				error = input.data('message');
-			} else {
-				// Get error
-				error = this.errors[this.config.lang][key];
-			}
+			// Fix key with data-type
+			key = key.split(',')[0];
 
 			// No error?
-			if(typeof error === 'undefined') {
-				// data type
-				var type = input.data('type');
-				if(type) {
-					error = this.errors[this.config.lang][':'+type];
-				}
-				// or default
-				if(typeof error === 'undefined') {
-					error = this.errors[this.config.lang]['*'];
+			if(!error) {
+				// Get error
+				error = this.errors[this.config.lang][key];
+
+				// still don't have
+				if(!error) {
+					// data type
+					var type = input.data('type');
+					if(type) {
+						error = this.errors[this.config.lang][':'+type];
+					}
+					// default error
+					if(!error) {
+						error = this.errors[this.config.lang]['*'];
+					}
 				}
 			}
+
 
 			// Replace all attributes
 			$.each(attrs, function(key, value){
@@ -260,4 +259,4 @@
 		});
 	};
 
-})(window.jQuery);
+})(this, this.document, this.jQuery);
