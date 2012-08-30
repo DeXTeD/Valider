@@ -42,6 +42,9 @@
 			Kod: <input type="text" name="code" pattern="[01]+" required="required" data-name="kod"> <small>np. 101010</small>
 		</div>
 		<div>
+			Kod2: <input type="text" name="code2" data-regex="binary" required="required" data-name="kod2"> <small>np. 101010</small>
+		</div>
+		<div>
 			Treść: <textarea name="content" required="required"></textarea>
 		</div>
 		<div>
@@ -63,7 +66,7 @@
 			<label>Ktoś inny <input type="radio" name="creator" value="2"></label>
 		</div>
 		<div>
-			Cena: <input type="number" name="cena" min="0" max="100" required="required">
+			Cena: <input type="number" name="cena" min="0" max="100" required="required" data-message=":name musi być podana w przedziale od :min do :max zł">
 		</div>
 		<div>
 			Cena2: <input type="text" data-type="number" name="cena2" min="0" max="100" required="required">
@@ -79,6 +82,17 @@
 <script src="../js/valider.js"></script>
 
 <script>
+ValiderConfig
+	.addRegex('binary', /^[01]+$/)
+	.addLang({
+		'pl': {
+			'regex:binary': 'Niepoprawny kod binarny'
+		},
+		'en': {
+			'regex:binary': 'Invalid binary code'
+		}
+	});
+
 $('form').Valider({
 	onErrors: function(errors) {
 		// Nothing

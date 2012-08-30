@@ -1,7 +1,7 @@
 /*
  * Valider - HTML5 Form Validation
  * @author DeXTeD
- * @version 0.3
+ * @version 0.4
  * @license MIT
  */
 
@@ -81,62 +81,6 @@
 			}
 		},
 
-		getError: function(key, input) {
-
-			var error = input.data('message'),
-				// Attributes for replace :names
-				attrs = {
-					'name': input.data('name') || input.attr('name'),
-					'val': input.val(),
-					'min': input.attr("min"),
-					'equals': input.data("equalsName"),
-					'max': input.attr("max")
-				};
-
-			// Fix key with data-type
-			key = key.split(',')[0];
-
-			// No error?
-			if(!error) {
-				// Get error
-				error = this.errors[this.config.lang][key];
-
-				// still don't have
-				if(!error) {
-					// data type
-					var type = input.data('type');
-					if(type) {
-						error = this.errors[this.config.lang][':'+type];
-					}
-					// default error
-					if(!error) {
-						error = this.errors[this.config.lang]['*'];
-					}
-				}
-			}
-
-
-			// Replace all attributes
-			$.each(attrs, function(key, value){
-				error = error.replace(':'+key, attrs[key]);
-			});
-
-			return error;
-		},
-
-		// Call user error callback function
-		callInputError: function(key, input) {
-			var error = this.getError(key, input);
-			this.config.onInputError.call(input, error);
-			return error;
-		},
-
-		// Call user pass callback function
-		callInputPass: function(input) {
-			this.config.onInputPass.call(input);
-		},
-
-		// Filter collection
 		filters: {
 			'[required]': function(input, val) {
 				if(input.is(':checkbox')) {
@@ -166,18 +110,77 @@
 			'[pattern]': function(input, val) {
 				return val === '' || new RegExp("^" + input.attr("pattern") + "$").test(val);
 			},
+			'[data-regex]': function(input, val) {
+				return val === '' || this.regex[input.data('regex')].test(val);
+			},
 			'[data-equals]': function(input, val) {
 				var input2 = this.inputs.filter('[name='+input.data('equals')+']');
 				return val === input2.val();
 			}
 		},
 
+		getError: function(key, input) {
+
+			var error = input.data('message'),
+				// Attributes for replace :names
+				attrs = {
+					'name': input.data('name') || input.attr('name'),
+					'val': input.val(),
+					'min': input.attr("min"),
+					'equals': input.data("equalsName") || input.data("equals"),
+					'max': input.attr("max")
+				};
+
+			if(key === '[data-regex]') {
+				// Fix key with data-regex
+				key = 'regex:'+input.data('regex');
+			} else {
+				// Fix key with data-type
+				key = key.split(',')[0];
+			}
+
+			// No error?
+			if(!error) {
+				// Get error
+				error = this.errors[this.config.lang][key];
+				// still don't have
+				if(!error) {
+					// data type
+					var type = input.data('type');
+					if(type) {
+						error = this.errors[this.config.lang][':'+type];
+					}
+					// default error
+					if(!error) {
+						error = this.errors[this.config.lang]['*'];
+					}
+				}
+			}
+
+			// Replace all attributes
+			$.each(attrs, function(key, value){
+				error = error.replace(':'+key, attrs[key]);
+			});
+
+			return error;
+		},
+
+		// Call user error callback function
+		callInputError: function(key, input) {
+			var error = this.getError(key, input);
+			this.config.onInputError.call(input, error);
+			return error;
+		},
+
+		// Call user pass callback function
+		callInputPass: function(input) {
+			this.config.onInputPass.call(input);
+		},
+
 		// Validate one input
 		validateInput: function(input) {
 			var self = this,
 				status = true;
-
-			input = $(input);
 
 			$.each(this.filters, function(key, fn) {
 				if(input.is(key)) {
@@ -202,12 +205,10 @@
 				clearTimeout(timer);
 				timer = setTimeout(function() {
 					var check = self.validateInput(input);
-					if(self.validateInput(input) === true) {
-						// Delete error
+					if(check === true) {
+						// input is valid - delete error, unbind and callback
 						delete self.incorrectInputs[input.attr('name')];
-						// user callback
 						self.callInputPass(input);
-						// Unbind recheck
 						self.unBindInput(input);
 					} else {
 						// Save error name
@@ -231,11 +232,13 @@
 				var input = $(this),
 					name = input.attr('name'),
 					check = self.validateInput(input);
+
 				if(check !== true) {
 					// Save error name
 					self.incorrectInputs[name] = check;
 					isError = true;
 				} else if(self.incorrectInputs[name]) {
+					// input is valid - delete error, unbind and callback
 					delete self.incorrectInputs[name];
 					self.callInputPass(input);
 					self.unBindInput(input);
@@ -249,6 +252,33 @@
 			}
 		}
 
+	};
+
+	window.ValiderConfig = {
+		addLang: function(lng) {
+			$.extend(true, Valider.prototype.errors, lng);
+			return this;
+		},
+		addRegex: function(name, regex) {
+			if(typeof name === 'object') {
+				$.extend(Valider.prototype.regex, name);
+			} else {
+				var filterObj = {};
+				filterObj[name] = regex;
+				$.extend(Valider.prototype.regex, filterObj);
+			}
+			return this;
+		},
+		addFilter: function(filter, fn) {
+			if(typeof filter === 'object') {
+				$.extend(Valider.prototype.filters, filter);
+			} else {
+				var filterObj = {};
+				filterObj[filter] = fn;
+				$.extend(Valider.prototype.filters, filterObj);
+			}
+			return this;
+		}
 	};
 
 	// jQuery Plugin
