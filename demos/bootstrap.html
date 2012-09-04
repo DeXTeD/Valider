@@ -2,32 +2,34 @@
 <html lang="pl">
 <head>
 	<meta charset="utf-8">
-	<title>Valider Example</title>
-	<style>
-		div {
-			padding: 10px;
-		}
-		.input-error {
-			box-shadow: 0 0 10px red;
-		}
-		select {
-			padding: 3px 10px;
-		}
-		.error {
-			display: inline-block;
-			vertical-align: middle;
-			background: #E95858;
-			color: #370000;
-			border-radius: 2px;
-			padding: 4px 10px;
-			font-size: 13px;
-			margin-left: 5px;
-			white-space: nowrap;
-		}
-	</style>
+	<title>Valider Twitter Bootstrap Form Example</title>
+	<link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
 </head>
 <body>
 
+<form class="form-horizontal">
+	<div class="control-group">
+		<label class="control-label" for="inputEmail">Email</label>
+		<div class="controls">
+			<input type="email" id="inputEmail" placeholder="Email" required="required">
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="inputName">Name</label>
+		<div class="controls">
+			<input type="text" id="inputName" placeholder="User name" required="required">
+		</div>
+	</div>
+	<div class="control-group">
+		<div class="controls">
+			<label class="checkbox">
+				<input name="rq" type="checkbox" required="required"> Required
+			</label>
+			<button type="submit" class="btn">Sign in</button>
+		</div>
+	</div>
+</form>
+<!-- 
 	<form action="?">
 		<div>
 			E-mail: <input type="email" name="email">
@@ -61,11 +63,6 @@
 			<input type="checkbox" name="typek" value="1" required="required" data-message="Zaakceptuj regulamin">
 		</div>
 		<div>
-			Twórca: (TODO)<br>
-			<label>Ja <input type="radio" name="creator" value="1"></label>
-			<label>Ktoś inny <input type="radio" name="creator" value="2"></label>
-		</div>
-		<div>
 			Cena: <input type="number" name="cena" min="0" max="100" required="required" data-message=":name musi być podana w przedziale od :min do :max zł">
 		</div>
 		<div>
@@ -76,22 +73,12 @@
 			<button>Save</button>
 		</div>
 	</form>
-
+ -->
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script src="../js/valider.js"></script>
 
 <script>
-ValiderConfig
-	.addRegex('binary', /^[01]+$/)
-	.addLang({
-		'pl': {
-			'regex:binary': 'Niepoprawny kod binarny'
-		},
-		'en': {
-			'regex:binary': 'Invalid binary code'
-		}
-	});
 
 $('form').Valider({
 	onErrors: function(errors) {
@@ -99,6 +86,8 @@ $('form').Valider({
 		// Nothing
 	},
 	onInputError: function(error) {
+		this.parents('.control-group').addClass('error');
+		/*
 		this.addClass('input-error');
 		var next = this.next('.error');
 		if(next.size())
@@ -108,12 +97,16 @@ $('form').Valider({
 			this.after(info);
 			info.show('fast');
 		}
+		*/
 	},
 	onInputPass: function() {
+		this.parents('.control-group').removeClass('error');
+		/*
 		this.removeClass('input-error');
 		this.next('.error').hide('fast', function() {
 			$(this).remove();
 		});
+		*/
 	}
 });
 </script>

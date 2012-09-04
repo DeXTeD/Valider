@@ -5,15 +5,17 @@
  * @license MIT
  */
 
-(function(window, document, $, undefined){
+(function($){
 	"use strict";
 
+	/* ================== DEL ==================
 	// Add HTML5 input types
 	$.each(["tel", "url", "email", "datetime", "date", "month", "week", "time", "datetime-local", "number", "range", "color"], function(i, t) {
 		$.expr[":"][t] = function(elem){
 			return elem.getAttribute("type") === t;
 		};
 	});
+	*/
 
 	var Valider = function(form, config) {
 
@@ -21,7 +23,6 @@
 
 		// Extend config
 		this.config = $.extend({
-			onInputError: function(error) {},
 			onErrors: function(errors) {
 				// Simple error
 				var arr = [];
@@ -30,6 +31,7 @@
 				});
 				alert(arr.join('\n'));
 			},
+			onInputError: function(error) {},
 			onInputPass: function() {},
 			lang: $('html').attr('lang') || 'en'
 		}, config || {});
@@ -55,29 +57,29 @@
 		regex: {
 			'number': /^-?[0-9]*(\.[0-9]+)?$/,
 			'email': /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/,
-			'url': /https?:\/\/([_a-z\d\-]+(\.[_a-z\d\-]+)+)(([_a-z\d\-\\\.\/]+[_a-z\d\-\\\/])+)*/
+			'url': /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?$/i
 		},
 
 		errors: {
 			en: {
-				'*'					: 'Incorrect value',
-				'[required]'		: 'Field :name is required',
-				':email'			: 'Invalid email address',
-				':number'			: 'Value must be a number',
-				':url'				: 'Invalid URL',
-				'[max]'				: 'The maximum value is :max',
-				'[min]'				: 'The minimum value is :min',
-				'[data-equals]'		: 'The value is not the same as the field :equals'
+				'*'            : 'Incorrect value',
+				'[required]'   : 'Field :name is required',
+				'[type=email]' : 'Invalid email address',
+				'[type=number]': 'Value must be a number',
+				'[type=url]'   : 'Invalid URL',
+				'[max]'        : 'The maximum value is :max',
+				'[min]'        : 'The minimum value is :min',
+				'[data-equals]': 'The value is not the same as the field :equals'
 			},
 			pl: {
-				'*'					: 'Niepoprawna wartość',
-				'[required]'		: 'Pole ":name" jest wymagane',
-				':email'			: 'Błędny adres e-mail',
-				':number'			: 'Wartość musi być liczbą',
-				':url'				: 'Niepoprawny adres WWW',
-				'[max]'				: 'Maksymalna wartość to :max',
-				'[min]'				: 'Minimala wartość to :min',
-				'[data-equals]'		: 'Wartość nie jest taka sama jak pole :equals'
+				'*'            : 'Niepoprawna wartość',
+				'[required]'   : 'Pole ":name" jest wymagane',
+				'[type=email]' : 'Błędny adres e-mail',
+				'[type=number]': 'Wartość musi być liczbą',
+				'[type=url]'   : 'Niepoprawny adres WWW',
+				'[max]'        : 'Maksymalna wartość to :max',
+				'[min]'        : 'Minimala wartość to :min',
+				'[data-equals]': 'Wartość nie jest taka sama jak pole :equals'
 			}
 		},
 
@@ -92,20 +94,26 @@
 				}
 				return !!val;
 			},
-			':email, [data-type="email"]': function(input, val) {
+			'[type=email], [data-type=email]': function(input, val) {
 				return val === '' || this.regex.email.test(val);
 			},
-			':number, [data-type="number"]': function(input, val) {
-				return val === '' || this.regex.number.test(val);
+			'[type=number], [data-type=number]': function(input, val) {
+				var valDot = val.replace(',', '.');
+				if(valDot !== val) {
+					input.val(valDot);
+				}
+				return val === '' || this.regex.number.test(valDot);
 			},
-			':url, [data-type="url"]': function(input, val) {
+			'[type=url], [data-type=url]': function(input, val) {
 				return val === '' || this.regex.url.test(val);
 			},
-			'[max]': function(input, val) {
-				return val === '' || (parseFloat(val) <= parseFloat(input.attr("max")));
+			'[max], [data-type=max]': function(input, val) {
+				var max = input.attr("max") || input.data("max");
+				return val === '' || (parseFloat(val) <= parseFloat(max));
 			},
-			'[min]': function(input, val) {
-				return val === '' || (parseFloat(val) >= parseFloat(input.attr("min")));
+			'[min], [data-type=min]': function(input, val) {
+				var min = input.attr("min") || input.data("min");
+				return val === '' || (parseFloat(val) >= parseFloat(min));
 			},
 			'[pattern]': function(input, val) {
 				return val === '' || new RegExp("^" + input.attr("pattern") + "$").test(val);
@@ -122,13 +130,13 @@
 		getError: function(key, input) {
 
 			var error = input.data('message'),
-				// Attributes for replace :names
+				// Attributes - replace :names
 				attrs = {
 					'name': input.data('name') || input.attr('name'),
 					'val': input.val(),
-					'min': input.attr("min"),
-					'equals': input.data("equalsName") || input.data("equals"),
-					'max': input.attr("max")
+					'min': input.attr("min") || input.data("min"),
+					'max': input.attr("max") || input.data("max"),
+					'equals': input.data("equalsName") || input.data("equals")
 				};
 
 			if(key === '[data-regex]') {
@@ -148,7 +156,7 @@
 					// data type
 					var type = input.data('type');
 					if(type) {
-						error = this.errors[this.config.lang][':'+type];
+						error = this.errors[this.config.lang]['[type='+type+']'];
 					}
 					// default error
 					if(!error) {
@@ -208,17 +216,17 @@
 					if(check === true) {
 						// input is valid - delete error, unbind and callback
 						delete self.incorrectInputs[input.attr('name')];
-						self.callInputPass(input);
 						self.unBindInput(input);
+						self.callInputPass(input);
 					} else {
 						// Save error name
 						self.incorrectInputs[input.attr('name')] = check;
 					}
-				}, 100);
+				}, 200);
 			});
 		},
 
-		// Unbind input to re-check value on change
+		// Unbind input
 		unBindInput: function(input) {
 			input.off('.valider-input');
 		},
@@ -240,8 +248,8 @@
 				} else if(self.incorrectInputs[name]) {
 					// input is valid - delete error, unbind and callback
 					delete self.incorrectInputs[name];
-					self.callInputPass(input);
 					self.unBindInput(input);
+					self.callInputPass(input);
 				}
 			});
 
@@ -285,8 +293,10 @@
 	$.fn.Valider = function(conf) {
 		return this.each(function() {
 			var form = $(this);
-			form.data('valider', new Valider(form, conf));
+			if(form.is('form')) {
+				form.data('valider', new Valider(form, conf));
+			}
 		});
 	};
 
-})(this, this.document, this.jQuery);
+})(window.jQuery);
