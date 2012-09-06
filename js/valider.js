@@ -5,34 +5,25 @@
  * @license MIT
  */
 
-(function($){
+(function ($) {
 	"use strict";
 
-	/* ================== DEL ==================
-	// Add HTML5 input types
-	$.each(["tel", "url", "email", "datetime", "date", "month", "week", "time", "datetime-local", "number", "range", "color"], function(i, t) {
-		$.expr[":"][t] = function(elem){
-			return elem.getAttribute("type") === t;
-		};
-	});
-	*/
-
-	var Valider = function(form, config) {
+	var Valider = function (form, config) {
 
 		var self = this;
 
 		// Extend config
 		this.config = $.extend({
-			onErrors: function(errors) {
+			onErrors: function (errors) {
 				// Simple error
 				var arr = [];
-				$.each(errors, function(key, value) {
+				$.each(errors, function (key, value) {
 					arr.push(value);
 				});
 				alert(arr.join('\n'));
 			},
-			onInputError: function(error) {},
-			onInputPass: function() {},
+			onInputError: function (error) {},
+			onInputPass: function () {},
 			lang: $('html').attr('lang') || 'en'
 		}, config || {});
 
@@ -43,12 +34,11 @@
 		this.form = form;
 		this.inputs = form.find(':input:not(:button, :image, :reset, :submit, :disabled), textarea:not(:disabled)');
 
-		// Validate on submit and remove native HTML5 form validation
-		form.on('submit.valider', function(event) {
+		// Bind validation on submit and disable native HTML5 form validation
+		form.on('submit.valider', function (event) {
 			self.validate(self.inputs, event);
 		}).attr('novalidate', 'novalidate');
 
-		// Return himself for API in jquery data
 		return this;
 	};
 
@@ -84,50 +74,50 @@
 		},
 
 		filters: {
-			'[required]': function(input, val) {
-				if(input.is(':checkbox')) {
+			'[required]': function (input, val) {
+				if (input.is(':checkbox')) {
 					return input.prop('checked');
 				}
-				if(input.is(':radio')) {
+				if (input.is(':radio')) {
 					// TODO radio support
 					return true;
 				}
 				return !!val;
 			},
-			'[type=email], [data-type=email]': function(input, val) {
+			'[type=email], [data-type=email]': function (input, val) {
 				return val === '' || this.regex.email.test(val);
 			},
-			'[type=number], [data-type=number]': function(input, val) {
+			'[type=number], [data-type=number]': function (input, val) {
 				var valDot = val.replace(',', '.');
-				if(valDot !== val) {
+				if (valDot !== val) {
 					input.val(valDot);
 				}
 				return val === '' || this.regex.number.test(valDot);
 			},
-			'[type=url], [data-type=url]': function(input, val) {
+			'[type=url], [data-type=url]': function (input, val) {
 				return val === '' || this.regex.url.test(val);
 			},
-			'[max], [data-type=max]': function(input, val) {
+			'[max], [data-type=max]': function (input, val) {
 				var max = input.attr("max") || input.data("max");
 				return val === '' || (parseFloat(val) <= parseFloat(max));
 			},
-			'[min], [data-type=min]': function(input, val) {
+			'[min], [data-type=min]': function (input, val) {
 				var min = input.attr("min") || input.data("min");
 				return val === '' || (parseFloat(val) >= parseFloat(min));
 			},
-			'[pattern]': function(input, val) {
+			'[pattern]': function (input, val) {
 				return val === '' || new RegExp("^" + input.attr("pattern") + "$").test(val);
 			},
-			'[data-regex]': function(input, val) {
+			'[data-regex]': function (input, val) {
 				return val === '' || this.regex[input.data('regex')].test(val);
 			},
-			'[data-equals]': function(input, val) {
-				var input2 = this.inputs.filter('[name='+input.data('equals')+']');
+			'[data-equals]': function (input, val) {
+				var input2 = this.inputs.filter('[name=' + input.data('equals') + ']');
 				return val === input2.val();
 			}
 		},
 
-		getError: function(key, input) {
+		getError: function (key, input) {
 
 			var error = input.data('message'),
 				// Attributes - replace :names
@@ -139,60 +129,60 @@
 					'equals': input.data("equalsName") || input.data("equals")
 				};
 
-			if(key === '[data-regex]') {
+			if (key === '[data-regex]') {
 				// Fix key with data-regex
-				key = 'regex:'+input.data('regex');
+				key = 'regex:' + input.data('regex');
 			} else {
 				// Fix key with data-type
 				key = key.split(',')[0];
 			}
 
 			// No error?
-			if(!error) {
+			if (!error) {
 				// Get error
 				error = this.errors[this.config.lang][key];
 				// still don't have
-				if(!error) {
+				if (!error) {
 					// data type
 					var type = input.data('type');
-					if(type) {
-						error = this.errors[this.config.lang]['[type='+type+']'];
+					if (type) {
+						error = this.errors[this.config.lang]['[type=' + type + ']'];
 					}
 					// default error
-					if(!error) {
+					if (!error) {
 						error = this.errors[this.config.lang]['*'];
 					}
 				}
 			}
 
 			// Replace all attributes
-			$.each(attrs, function(key, value){
-				error = error.replace(':'+key, attrs[key]);
+			$.each(attrs, function (key, value) {
+				error = error.replace(':' + key, attrs[key]);
 			});
 
 			return error;
 		},
 
 		// Call user error callback function
-		callInputError: function(key, input) {
+		callInputError: function (key, input) {
 			var error = this.getError(key, input);
 			this.config.onInputError.call(input, error);
 			return error;
 		},
 
 		// Call user pass callback function
-		callInputPass: function(input) {
+		callInputPass: function (input) {
 			this.config.onInputPass.call(input);
 		},
 
 		// Validate one input
-		validateInput: function(input) {
+		validateInput: function (input) {
 			var self = this,
 				status = true;
 
-			$.each(this.filters, function(key, fn) {
-				if(input.is(key)) {
-					if(!fn.call(self, input, input.val())) {
+			$.each(this.filters, function (key, fn) {
+				if (input.is(key)) {
+					if (!fn.call(self, input, input.val())) {
 						self.bindInput(input);
 						status = self.callInputError(key, input);
 						return false;
@@ -203,17 +193,17 @@
 		},
 
 		// Bind input to recheck value on change
-		bindInput: function(input) {
+		bindInput: function (input) {
 			var self = this,
 				timer;
 			// Remove all to prevent multiple binds
 			this.unBindInput(input);
 			// Bind all possible events and debounce them
-			input.on('keyup.valider-input change.valider-input click.valider-input', function() {
+			input.on('keyup.valider-input change.valider-input click.valider-input', function () {
 				clearTimeout(timer);
-				timer = setTimeout(function() {
+				timer = setTimeout(function () {
 					var check = self.validateInput(input);
-					if(check === true) {
+					if (check === true) {
 						// input is valid - delete error, unbind and callback
 						delete self.incorrectInputs[input.attr('name')];
 						self.unBindInput(input);
@@ -227,25 +217,25 @@
 		},
 
 		// Unbind input
-		unBindInput: function(input) {
+		unBindInput: function (input) {
 			input.off('.valider-input');
 		},
 
 		// Validate all inputs in form
-		validate: function(inputs, event) {
+		validate: function (inputs, event) {
 			var self = this,
 				isError = false;
 
-			inputs.each(function() {
+			inputs.each(function () {
 				var input = $(this),
 					name = input.attr('name'),
 					check = self.validateInput(input);
 
-				if(check !== true) {
+				if (check !== true) {
 					// Save error name
 					self.incorrectInputs[name] = check;
 					isError = true;
-				} else if(self.incorrectInputs[name]) {
+				} else if (self.incorrectInputs[name]) {
 					// input is valid - delete error, unbind and callback
 					delete self.incorrectInputs[name];
 					self.unBindInput(input);
@@ -254,7 +244,7 @@
 			});
 
 			// If some input has error, prevent submit
-			if(isError) {
+			if (isError) {
 				this.config.onErrors.call(null, this.incorrectInputs);
 				event.preventDefault();
 			}
@@ -262,13 +252,13 @@
 
 	};
 
-	window.ValiderConfig = {
-		addLang: function(lng) {
+	$.Valider = {
+		addLang: function (lng) {
 			$.extend(true, Valider.prototype.errors, lng);
 			return this;
 		},
-		addRegex: function(name, regex) {
-			if(typeof name === 'object') {
+		addRegex: function (name, regex) {
+			if (typeof name === 'object') {
 				$.extend(Valider.prototype.regex, name);
 			} else {
 				var filterObj = {};
@@ -277,8 +267,8 @@
 			}
 			return this;
 		},
-		addFilter: function(filter, fn) {
-			if(typeof filter === 'object') {
+		addFilter: function (filter, fn) {
+			if (typeof filter === 'object') {
 				$.extend(Valider.prototype.filters, filter);
 			} else {
 				var filterObj = {};
@@ -290,10 +280,10 @@
 	};
 
 	// jQuery Plugin
-	$.fn.Valider = function(conf) {
-		return this.each(function() {
+	$.fn.Valider = function (conf) {
+		return this.each(function () {
 			var form = $(this);
-			if(form.is('form')) {
+			if (form.is('form')) {
 				form.data('valider', new Valider(form, conf));
 			}
 		});

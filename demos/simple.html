@@ -30,6 +30,9 @@
 
 	<form action="?">
 		<div>
+			Login: <input type="text" name="email" required="required" data-not="root,admin">
+		</div>
+		<div>
 			E-mail: <input type="email" name="email">
 		</div>
 		<div>
@@ -82,20 +85,24 @@
 <script src="../js/valider.js"></script>
 
 <script>
-ValiderConfig
+$.Valider
 	.addRegex('binary', /^[01]+$/)
 	.addLang({
 		'pl': {
-			'regex:binary': 'Niepoprawny kod binarny'
+			'regex:binary': 'Niepoprawny kod binarny',
+			'[data-not]': 'Wymyśl jakiś lepszy login'
 		},
 		'en': {
-			'regex:binary': 'Invalid binary code'
+			'regex:binary': 'Invalid binary code',
+			'[data-not]': 'Think of a better login'
 		}
+	})
+	.addFilter('[data-not]', function(input, val) {
+		return $.inArray(val.toLowerCase(), input.data('not').split(',')) === -1;
 	});
 
 $('form').Valider({
 	onErrors: function(errors) {
-		console.log(errors);
 		// Nothing
 	},
 	onInputError: function(error) {

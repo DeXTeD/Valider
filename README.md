@@ -24,7 +24,7 @@ $('form').Valider({
 
 Regular expression:
 ```js
-ValiderConfig
+$.Valider
 	.addRegex('binary', /^[01]+$/)
 	.addLang({
 		'en': {
@@ -44,7 +44,7 @@ ValiderConfig
 
 Custom filter:
 ```js
-ValiderConfig.addFilter('[data-not]', function(input, val) {
+$.Valider.addFilter('[data-not]', function(input, val) {
 	return $.inArray(val, input.data('not').split(','));
 });
 ```
@@ -58,9 +58,8 @@ Valider is open-sourced software licensed under the MIT License.
 ## Changelog
 
 ### 0.4
-- Dodano `ValiderConfig` co umożliwia:
-    - dodawania własnych filtrów (`addFilter`)
-    - dodawanie wyrażeń regularnych (`addRegex`) i ich komunikatów (`regex:nazwa`)
+- dodawania własnych filtrów (`$.Valider.addFilter`)
+- dodawanie wyrażeń regularnych (`$.Valider.addRegex`) i ich komunikatów (`regex:nazwa`)
 - Parę drobnych poprawek
 
 ### 0.3
