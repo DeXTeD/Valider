@@ -57,6 +57,9 @@ Valider is open-sourced software licensed under the MIT License.
 
 ## Changelog
 
+### 0.5
+- ValiderConfig -> $.Valider
+- 
 ### 0.4
 - dodawania własnych filtrów (`$.Valider.addFilter`)
 - dodawanie wyrażeń regularnych (`$.Valider.addRegex`) i ich komunikatów (`regex:nazwa`)

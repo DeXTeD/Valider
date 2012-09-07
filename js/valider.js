@@ -1,7 +1,7 @@
 /*
  * Valider - HTML5 Form Validation
  * @author DeXTeD
- * @version 0.4
+ * @version 0.5
  * @license MIT
  */
 
@@ -33,6 +33,15 @@
 		// Cache form and inputs
 		this.form = form;
 		this.inputs = form.find(':input:not(:button, :image, :reset, :submit, :disabled), textarea:not(:disabled)');
+
+		this.inputs.each(function() {
+			var input = $(this);
+			input.data('valider', {
+				triggerError: function(key) {
+					self.callInputError(key, input);
+				}
+			});
+		});
 
 		// Bind validation on submit and disable native HTML5 form validation
 		form.on('submit.valider', function (event) {
@@ -117,9 +126,9 @@
 			}
 		},
 
-		getError: function (key, input) {
+		getError: function (key, input, msg) {
 
-			var error = input.data('message'),
+			var error = msg ? msg : input.data('message'),
 				// Attributes - replace :names
 				attrs = {
 					'name': input.data('name') || input.attr('name'),
@@ -129,16 +138,15 @@
 					'equals': input.data("equalsName") || input.data("equals")
 				};
 
-			if (key === '[data-regex]') {
-				// Fix key with data-regex
-				key = 'regex:' + input.data('regex');
-			} else {
-				// Fix key with data-type
-				key = key.split(',')[0];
-			}
-
 			// No error?
 			if (!error) {
+				if (key === '[data-regex]') {
+					// Fix key with data-regex
+					key = 'regex:' + input.data('regex');
+				} else {
+					// Fix key with data-type
+					key = key.split(',')[0];
+				}
 				// Get error
 				error = this.errors[this.config.lang][key];
 				// still don't have
@@ -164,8 +172,8 @@
 		},
 
 		// Call user error callback function
-		callInputError: function (key, input) {
-			var error = this.getError(key, input);
+		callInputError: function (key, input, msg) {
+			var error = this.getError(key, input, msg);
 			this.config.onInputError.call(input, error);
 			return error;
 		},
@@ -248,6 +256,14 @@
 				this.config.onErrors.call(null, this.incorrectInputs);
 				event.preventDefault();
 			}
+		},
+
+		invalidate: function(obj) {
+			var self = this,
+				inputs = this.inputs;
+			$.each(obj, function(key, value) {
+				self.callInputError(false, inputs.filter('[name='+key+']'), value);
+			});
 		}
 
 	};
@@ -284,7 +300,7 @@
 		return this.each(function () {
 			var form = $(this);
 			if (form.is('form')) {
-				form.data('valider', new Valider(form, conf));
+				form.data('valider', new Valider(form, conf)).data('a', 'asddsa');
 			}
 		});
 	};
