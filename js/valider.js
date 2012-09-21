@@ -300,7 +300,7 @@
 		return this.each(function () {
 			var form = $(this);
 			if (form.is('form')) {
-				form.data('valider', new Valider(form, conf)).data('a', 'asddsa');
+				form.data('valider', new Valider(form, conf));
 			}
 		});
 	};
