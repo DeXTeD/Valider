@@ -4,25 +4,32 @@
 	<meta charset="utf-8">
 	<title>Valider Example</title>
 	<style>
+		body {
+			font-family: sans-serif;
+		}
 		div {
 			padding: 10px;
 		}
-		.input-error {
-			box-shadow: 0 0 10px red;
+		input[type=text],
+		input[type=email],
+		input[type=password],
+		input[type=number] {
+			padding: 5px 6px;
+			border: 1px solid #CCC;
+			background-color: #f5f5f5;
+			border-radius: 3px;
 		}
-		select {
-			padding: 3px 10px;
+		.error-input {
+			box-shadow: 0 0 10px rgba(255,0,0,.2);
+			border-color: #9D3030 !important;
 		}
-		.error {
+
+		.error-text {
 			display: inline-block;
 			vertical-align: middle;
-			background: #E95858;
-			color: #370000;
-			border-radius: 2px;
+			color: #E95858;
 			padding: 4px 10px;
-			font-size: 13px;
-			margin-left: 5px;
-			white-space: nowrap;
+			font-size: 11px;
 		}
 	</style>
 </head>
@@ -82,7 +89,7 @@
 
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<script src="../js/valider.js"></script>
+<script src="../js/valider.min.js"></script>
 
 <script>
 $.Valider
@@ -101,26 +108,21 @@ $.Valider
 		return $.inArray(val.toLowerCase(), input.data('not').split(',')) === -1;
 	});
 
+
 $('form').Valider({
-	onErrors: function(errors) {
-		// Nothing
-	},
 	onInputError: function(error) {
-		this.addClass('input-error');
-		var next = this.next('.error');
-		if(next.size())
-			next.text(error);
-		else {
-			var info = $('<span class="error">'+error+'</span>').hide();
-			this.after(info);
-			info.show('fast');
+		this.addClass('error-input')
+		var errorTag = this.next();
+		if (errorTag.size()) {
+			errorTag.text(error);
+		} else {
+			errorTag = $('<span/>', {text: error, 'class':'error-text'});
+			this.after(errorTag);
 		}
 	},
 	onInputPass: function() {
-		this.removeClass('input-error');
-		this.next('.error').hide('fast', function() {
-			$(this).remove();
-		});
+		this.removeClass('error-input');
+		this.next().remove();
 	}
 });
 </script>

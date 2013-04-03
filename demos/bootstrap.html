@@ -4,6 +4,11 @@
 	<meta charset="utf-8">
 	<title>Valider Twitter Bootstrap Form Example</title>
 	<link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+	<style>
+	body {
+		padding: 30px;
+	}
+	</style>
 </head>
 <body>
 
@@ -11,102 +16,54 @@
 	<div class="control-group">
 		<label class="control-label" for="inputEmail">Email</label>
 		<div class="controls">
-			<input type="email" id="inputEmail" placeholder="Email" required="required">
+			<input type="email" id="inputEmail" name="email" required="required">
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" for="inputName">Name</label>
+		<label class="control-label" for="inputName">Imię</label>
 		<div class="controls">
-			<input type="text" id="inputName" placeholder="User name" required="required">
+			<input type="text" id="inputName" name="imię" required="required">
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="inputPass">Hasło</label>
+		<div class="controls">
+			<input type="text" id="inputPass" name="hasło" required="required">
 		</div>
 	</div>
 	<div class="control-group">
 		<div class="controls">
 			<label class="checkbox">
-				<input name="rq" type="checkbox" required="required"> Required
+				<input name="rq" type="checkbox" required="required"> Akceptuję regulamin
 			</label>
-			<button type="submit" class="btn">Sign in</button>
 		</div>
 	</div>
+	<div class="form-actions btn-toolbar">
+		<button class="btn btn-primary">Zapisz zmiany</button>
+	</div>
 </form>
-<!-- 
-	<form action="?">
-		<div>
-			E-mail: <input type="email" name="email">
-		</div>
-		<div>
-			Hasło: <input type="password" name="pass">
-		</div>
-		<div>
-			Hasło2: <input type="password" name="pass2" data-equals="pass" data-equals-name="Hasło">
-		</div>
-		<div>
-			Kod: <input type="text" name="code" pattern="[01]+" required="required" data-name="kod"> <small>np. 101010</small>
-		</div>
-		<div>
-			Kod2: <input type="text" name="code2" data-regex="binary" required="required" data-name="kod2"> <small>np. 101010</small>
-		</div>
-		<div>
-			Treść: <textarea name="content" required="required"></textarea>
-		</div>
-		<div>
-			Kategoria:
-			<select name="category" required="required">
-				<option value="">-</option>
-				<option>1</option>
-				<option>2</option>
-				<option>3</option>
-			</select>
-		</div>
-		<div>
-			Regulamin:
-			<input type="checkbox" name="typek" value="1" required="required" data-message="Zaakceptuj regulamin">
-		</div>
-		<div>
-			Cena: <input type="number" name="cena" min="0" max="100" required="required" data-message=":name musi być podana w przedziale od :min do :max zł">
-		</div>
-		<div>
-			Cena2: <input type="text" data-type="number" name="cena2" min="0" max="100" required="required">
-		</div>
-		<div>
-			<input type="reset">
-			<button>Save</button>
-		</div>
-	</form>
- -->
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<script src="../js/valider.js"></script>
+<script src="../js/valider.min.js"></script>
 
 <script>
 
 $('form').Valider({
-	onErrors: function(errors) {
-		console.log(errors);
-		// Nothing
-	},
 	onInputError: function(error) {
 		this.parents('.control-group').addClass('error');
-		/*
-		this.addClass('input-error');
-		var next = this.next('.error');
-		if(next.size())
-			next.text(error);
-		else {
-			var info = $('<span class="error">'+error+'</span>').hide();
-			this.after(info);
-			info.show('fast');
+		if(this.is(':checkbox'))
+			return;
+		var errorTag = this.next();
+		if (errorTag.size()) {
+			errorTag.text(error);
+		} else {
+			errorTag = $('<span/>', {text: error, 'class':'help-inline'});
+			this.after(errorTag);
 		}
-		*/
 	},
 	onInputPass: function() {
 		this.parents('.control-group').removeClass('error');
-		/*
-		this.removeClass('input-error');
-		this.next('.error').hide('fast', function() {
-			$(this).remove();
-		});
-		*/
+		this.next('.help-inline').remove();
 	}
 });
 </script>

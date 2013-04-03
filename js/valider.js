@@ -1,7 +1,7 @@
 /*
  * Valider - HTML5 Form Validation
  * @author DeXTeD
- * @version 0.5
+ * @version 1.0.0
  * @license MIT
  */
 
@@ -14,16 +14,9 @@
 
 		// Extend config
 		this.config = $.extend({
-			onErrors: function (errors) {
-				// Simple error
-				var arr = [];
-				$.each(errors, function (key, value) {
-					arr.push(value);
-				});
-				alert(arr.join('\n'));
-			},
-			onInputError: function (error) {},
-			onInputPass: function () {},
+			onErrors: function (errors) {},
+			onInputError: function (error, input) {},
+			onInputPass: function (input) {},
 			lang: $('html').attr('lang') || 'en'
 		}, config || {});
 
@@ -174,13 +167,13 @@
 		// Call user error callback function
 		callInputError: function (key, input, msg) {
 			var error = this.getError(key, input, msg);
-			this.config.onInputError.call(input, error);
+			this.config.onInputError.call(input, error, input);
 			return error;
 		},
 
 		// Call user pass callback function
 		callInputPass: function (input) {
-			this.config.onInputPass.call(input);
+			this.config.onInputPass.call(input, input);
 		},
 
 		// Validate one input
@@ -253,7 +246,7 @@
 
 			// If some input has error, prevent submit
 			if (isError) {
-				this.config.onErrors.call(null, this.incorrectInputs);
+				this.config.onErrors.call(null, this.incorrectInputs, inputs);
 				event.preventDefault();
 			}
 		},
