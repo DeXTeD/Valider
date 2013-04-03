@@ -1,4 +1,4 @@
-/*
+/*!
  * Valider - HTML5 Form Validation
  * @author DeXTeD
  * @version 1.0.0
