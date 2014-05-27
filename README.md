@@ -18,7 +18,7 @@ $('form').Valider({
 		this.addClass('error')
 		// Oraz umieścić gdzieś komunikat `error`
 		var errorTag = this.next();
-		if (errorTag.size()) {
+		if (errorTag.lenght) {
 			errorTag.text(error);
 		} else {
 			errorTag = $('<span/>', {text: error});
@@ -77,6 +77,11 @@ $.Valider.addLang({
 Valider is open-sourced software licensed under the MIT License.
 
 ## Changelog
+
+### 1.1.0
+- Walidacja zaraz po opuszczeniu pola (blur)
+- Nowy filtr `[data-limit]` do ograniczania maksymalnej ilości znaków w polu
+- Poprawione przykłady
 
 ### 1.0.0
 - Więcej przykładów

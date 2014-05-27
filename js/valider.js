@@ -1,7 +1,7 @@
 /*!
  * Valider - HTML5 Form Validation
- * @author DeXTeD
- * @version 1.0.0
+ * @author Kacper Kozak
+ * @version 1.1.0
  * @license MIT
  */
 
@@ -17,7 +17,7 @@
 			onErrors: function (errors) {},
 			onInputError: function (error, input) {},
 			onInputPass: function (input) {},
-			lang: $('html').attr('lang') || 'en'
+			lang: $('html').attr('lang') || 'pl'
 		}, config || {});
 
 		// Store incorrect inputs for onErrors callback
@@ -25,7 +25,7 @@
 
 		// Cache form and inputs
 		this.form = form;
-		this.inputs = form.find(':input:not(:button, :image, :reset, :submit, :disabled), textarea:not(:disabled)');
+		this.inputs = form.find(':input:not(:button, :image, :reset, :submit, :disabled)');
 
 		this.inputs.each(function() {
 			var input = $(this);
@@ -40,6 +40,13 @@
 		form.on('submit.valider', function (event) {
 			self.validate(self.inputs, event);
 		}).attr('novalidate', 'novalidate');
+
+		this.inputs.on('blur.valider', function(event) {
+			var input = $(this);
+			setTimeout(function() {
+				self.validateInput(input);
+			}, 350); // dajmy chwilę czasu na kliknięcie np. jakiegoś popupa z kalendarzem
+		});
 
 		return this;
 	};
@@ -61,28 +68,28 @@
 				'[type=url]'   : 'Invalid URL',
 				'[max]'        : 'The maximum value is :max',
 				'[min]'        : 'The minimum value is :min',
-				'[data-equals]': 'The value is not the same as the field :equals'
+				'[data-equals]': 'The value is not the same as the field :equals',
+				'[data-limit]' : 'The maximum length is :limit characters'
 			},
 			pl: {
 				'*'            : 'Niepoprawna wartość',
-				'[required]'   : 'Pole ":name" jest wymagane',
+				'[required]'   : 'Pole jest wymagane',
 				'[type=email]' : 'Błędny adres e-mail',
 				'[type=number]': 'Wartość musi być liczbą',
 				'[type=url]'   : 'Niepoprawny adres WWW',
 				'[max]'        : 'Maksymalna wartość to :max',
 				'[min]'        : 'Minimala wartość to :min',
-				'[data-equals]': 'Wartość nie jest taka sama jak pole :equals'
+				'[data-equals]': 'Wartość nie jest taka sama jak pole :equals',
+				'[data-limit]' : 'Maksymalna długość to :limit znaków'
 			}
 		},
 
 		filters: {
 			'[required]': function (input, val) {
-				if (input.is(':checkbox')) {
-					return input.prop('checked');
-				}
-				if (input.is(':radio')) {
-					// TODO radio support
-					return true;
+				if (input.is(':checkbox') || input.is(':radio')) {
+					// Nazwa bez tablicy
+					var name = input.attr('name').match(/^[^\[]+/)[0];
+					return !!this.form.find('input[type="'+input.attr('type')+'"][name^="'+name+'"]:checked').length;
 				}
 				return !!val;
 			},
@@ -116,7 +123,10 @@
 			'[data-equals]': function (input, val) {
 				var input2 = this.inputs.filter('[name=' + input.data('equals') + ']');
 				return val === input2.val();
-			}
+			},
+			'[data-limit]': function (input, val) {
+				return val === '' || input.data('limit') >= val.length;
+			},
 		},
 
 		getError: function (key, input, msg) {
@@ -128,7 +138,8 @@
 					'val': input.val(),
 					'min': input.attr("min") || input.data("min"),
 					'max': input.attr("max") || input.data("max"),
-					'equals': input.data("equalsName") || input.data("equals")
+					'equals': input.data("equalsName") || input.data("equals"),
+					'limit': input.data("limit"),
 				};
 
 			// No error?
@@ -213,7 +224,7 @@
 						// Save error name
 						self.incorrectInputs[input.attr('name')] = check;
 					}
-				}, 200);
+				}, 20);
 			});
 		},
 
