@@ -1,6 +1,12 @@
 # Valider
 Walidator formularzy client-side w HTML5.
 
+
+## Instalacja
+```sh
+$ bower install valider
+```
+
 ## Przykład
 Online:
 - [Simple](http://9px.pl/Projects/Valider/demos/example.html)
