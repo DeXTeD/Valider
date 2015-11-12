@@ -1,0 +1,24 @@
+{
+  "name": "valider",
+  "version": "1.1.1",
+  "description": "HTML5 Form Validator",
+  "main": "js/valider.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DeXTeD/Valider.git"
+  },
+  "keywords": [
+    "html5",
+    "validator",
+    "forms"
+  ],
+  "author": "Kacper Kozak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DeXTeD/Valider/issues"
+  },
+  "homepage": "https://github.com/DeXTeD/Valider#readme"
+}

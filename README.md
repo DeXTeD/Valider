@@ -78,6 +78,10 @@ Valider is open-sourced software licensed under the MIT License.
 
 ## Changelog
 
+### 1.1.1
+- Walidacja email powinna być case insensitive
+- Drobne poprawki formatowania
+
 ### 1.1.0
 - Walidacja zaraz po opuszczeniu pola (blur)
 - Nowy filtr `[data-limit]` do ograniczania maksymalnej ilości znaków w polu
