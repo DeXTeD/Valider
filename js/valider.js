@@ -41,11 +41,11 @@
 			self.validate(self.inputs, event);
 		}).attr('novalidate', 'novalidate');
 
-		this.inputs.on('blur.valider', function () {
+		this.inputs.on('change.valider, validate.valider', function () {
 			var input = $(this);
 			setTimeout(function () {
 				self.validateInput(input);
-			}, 350); // dajmy chwilę czasu na kliknięcie np. jakiegoś popupa z kalendarzem
+			}, 350);
 		});
 
 		return this;
