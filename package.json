@@ -1,10 +1,11 @@
 {
   "name": "valider",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "HTML5 Form Validator",
   "main": "js/valider.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp"
   },
   "repository": {
     "type": "git",
