@@ -1,130 +1,153 @@
 <!doctype html>
 <html lang="pl">
 <head>
-	<meta charset="utf-8">
-	<title>Valider Example</title>
-	<style>
-		body {
-			font-family: sans-serif;
-		}
-		div {
-			padding: 10px;
-		}
-		input[type=text],
-		input[type=email],
-		input[type=password],
-		input[type=number] {
-			padding: 5px 6px;
-			border: 1px solid #CCC;
-			background-color: #f5f5f5;
-			border-radius: 3px;
-		}
-		.error-input {
-			box-shadow: 0 0 10px rgba(255,0,0,.2);
-			border-color: #9D3030 !important;
-		}
+    <meta charset="utf-8">
+    <title>Valider Example</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        div {
+            padding: 10px;
+        }
+        input[type=text],
+        input[type=email],
+        input[type=password],
+        input[type=number] {
+            padding: 5px 6px;
+            border: 1px solid #CCC;
+            background-color: #f5f5f5;
+            border-radius: 3px;
+        }
+        .error-input {
+            box-shadow: 0 0 10px rgba(255,0,0,.2);
+            border-color: #9D3030 !important;
+        }
 
-		.error-text {
-			display: inline-block;
-			vertical-align: middle;
-			color: #E95858;
-			padding: 4px 10px;
-			font-size: 11px;
-		}
-	</style>
+        .error-text {
+            display: inline-block;
+            vertical-align: middle;
+            color: #E95858;
+            padding: 4px 10px;
+            font-size: 11px;
+        }
+    </style>
 </head>
 <body>
 
-	<form action="?">
-		<div>
-			Login: <input type="text" name="email" required="required" data-not="root,admin">
-		</div>
-		<div>
-			E-mail: <input type="email" name="email">
-		</div>
-		<div>
-			Hasło: <input type="password" name="pass">
-		</div>
-		<div>
-			Hasło2: <input type="password" name="pass2" data-equals="pass" data-equals-name="Hasło">
-		</div>
-		<div>
-			Kod: <input type="text" name="code" pattern="[01]+" required="required" data-name="kod"> <small>np. 101010</small>
-		</div>
-		<div>
-			Kod2: <input type="text" name="code2" data-regex="binary" required="required" data-name="kod2"> <small>np. 101010</small>
-		</div>
-		<div>
-			Treść: <textarea name="content" required="required" data-limit="20"></textarea>
-		</div>
-		<div>
-			Kategoria:
-			<select name="category" required="required">
-				<option value="">-</option>
-				<option>1</option>
-				<option>2</option>
-				<option>3</option>
-			</select>
-		</div>
-		<div>
-			Regulamin:
-			<input type="checkbox" name="typek" value="1" required="required" data-message="Zaakceptuj regulamin">
-		</div>
-		<div>
-			Twórca: (TODO)<br>
-			<label>Ja <input type="radio" name="creator" value="1"></label>
-			<label>Ktoś inny <input type="radio" name="creator" value="2"></label>
-		</div>
-		<div>
-			Cena: <input type="number" name="cena" min="0" max="100" required="required" data-message=":name musi być podana w przedziale od :min do :max zł">
-		</div>
-		<div>
-			Cena2: <input type="text" data-type="number" name="cena2" min="0" max="100" required="required">
-		</div>
-		<div>
-			<input type="reset">
-			<button>Save</button>
-		</div>
-	</form>
+    <form action="?">
+        <div>
+            Login: <input type="text" name="login" required="required" data-not="root,admin">
+        </div>
+        <div>
+            E-mail: <input type="email" name="email">
+        </div>
+        <div>
+            Hasło: <input type="password" name="pass">
+        </div>
+        <div>
+            Hasło2: <input type="password" name="pass2" data-equals="pass" data-equals-name="Hasło">
+        </div>
+        <div>
+            Kod: <input type="text" name="code" pattern="[01]+" required="required" data-name="kod"> <small>np. 101010</small>
+        </div>
+        <div>
+            Kod2: <input type="text" name="code2" data-regex="binary" required="required" data-name="kod2"> <small>np. 101010</small>
+        </div>
+        <div>
+            Treść: <textarea name="content" required="required" data-limit="20"></textarea>
+        </div>
+        <div>
+            Kategoria:
+            <select name="category" required="required">
+                <option value="">-</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+            </select>
+        </div>
+        <div>
+            Regulamin:
+            <input type="checkbox" name="typek" value="1" required="required" data-message="Zaakceptuj regulamin">
+        </div>
+        <div>
+            Twórca: (TODO)<br>
+            <label>Ja <input type="radio" name="creator" value="1"></label>
+            <label>Ktoś inny <input type="radio" name="creator" value="2"></label>
+        </div>
+        <div>
+            Cena: <input type="number" name="cena" min="0" max="100" required="required" data-message=":name musi być podana w przedziale od :min do :max zł">
+        </div>
+        <div>
+            Cena2: <input type="text" data-type="number" name="cena2" min="0" max="100" required="required">
+        </div>
+        <div>
+            <input type="reset">
+            <button>Save</button>
+        </div>
+    </form>
+
+    <button id="customError">Trigger Error</button>
+    <button id="customError2">Trigger Error 2</button>
 
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script src="../js/valider.js"></script>
 
 <script>
+
 $.Valider
-	.addRegex('binary', /^[01]+$/)
-	.addLang({
-		'pl': {
-			'regex:binary': 'Niepoprawny kod binarny',
-			'[data-not]': 'Wymyśl jakiś lepszy login'
-		},
-		'en': {
-			'regex:binary': 'Invalid binary code',
-			'[data-not]': 'Think of a better login'
-		}
-	})
-	.addFilter('[data-not]', function(input, val) {
-		return $.inArray(val.toLowerCase(), input.data('not').split(',')) === -1;
-	});
+    .addRegex('binary', /^[01]+$/)
+    .addLang({
+        'pl': {
+            'regex:binary': 'Niepoprawny kod binarny',
+            '[data-not]': 'Wymyśl jakiś lepszy login'
+        },
+        'en': {
+            'regex:binary': 'Invalid binary code',
+            '[data-not]': 'Think of a better login'
+        }
+    })
+    .addFilter('[data-not]', function (input, val) {
+        return $.inArray(val.toLowerCase(), input.data('not').split(',')) === -1;
+    });
 
+(function () {
 
-$('form').Valider({
-	onInputError: function(error) {
-		this.addClass('error-input')
-		var errorTag = this.next();
-		if (errorTag.size()) {
-			errorTag.text(error);
-		} else {
-			errorTag = $('<span/>', {text: error, 'class':'error-text'});
-			this.after(errorTag);
-		}
-	},
-	onInputPass: function() {
-		this.removeClass('error-input');
-		this.next().remove();
-	}
-});
+    var form = $('form');
+
+    form.Valider({
+        onInputError: function (error) {
+            var errorTag = this.next();
+            this.addClass('error-input')
+            if (errorTag.size()) {
+                errorTag.text(error);
+            } else {
+                errorTag = $('<span/>', {text: error, 'class': 'error-text'});
+                this.after(errorTag);
+            }
+        },
+        onInputPass: function () {
+            this.removeClass('error-input');
+            this.next().remove();
+        }
+    });
+
+    $('#customError').on('click', function () {
+        form.data('valider').invalidate({
+            login: 'Login już zajęty',
+            email: 'Email już zajęty'
+        });
+    })
+
+    $('#customError2').on('click', function () {
+        form.data('valider').invalidate({
+            email: 'Nie istnieje'
+        });
+    });
+
+})();
+
 </script>
 </body>
 </html>

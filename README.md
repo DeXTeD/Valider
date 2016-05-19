@@ -14,33 +14,33 @@ Online:
 
 ```js
 $('form').Valider({
-	onErrors: function(errors) {
-		// Tutaj możesz zrobić coś z wszystkimi błędami
-		// `errors` jest obiektem w którym kluczem jest nazwa inputa
-	},
-	onInputError: function(error) {
-		// Błąd dla poszczególnego inputa
-		// Możesz np. dodać klasę błędu
-		this.addClass('error')
-		// Oraz umieścić gdzieś komunikat `error`
-		var errorTag = this.next();
-		if (errorTag.lenght) {
-			errorTag.text(error);
-		} else {
-			errorTag = $('<span/>', {text: error});
-			this.after(errorTag);
-		}
-	},
-	onInputPass: function() {
-		// Input który miał błąd i użytkownik go poprawił,
-		// więc trzeba usunąć klasę
-		this.removeClass('error');
-		// oraz komunikat
-		this.next().remove();
-	}
-	// Jest tu jeszcze parametr lang np. `lang: 'ru'`
-	// ale nie trzeba o nim pamiętać
-	// domyślnie jest brany z atrybutu `lang` w tagu <html>
+    onErrors: function(errors) {
+        // Tutaj możesz zrobić coś z wszystkimi błędami
+        // `errors` jest obiektem w którym kluczem jest nazwa inputa
+    },
+    onInputError: function(error) {
+        // Błąd dla poszczególnego inputa
+        // Możesz np. dodać klasę błędu
+        this.addClass('error')
+        // Oraz umieścić gdzieś komunikat `error`
+        var errorTag = this.next();
+        if (errorTag.lenght) {
+            errorTag.text(error);
+        } else {
+            errorTag = $('<span/>', {text: error});
+            this.after(errorTag);
+        }
+    },
+    onInputPass: function() {
+        // Input który miał błąd i użytkownik go poprawił,
+        // więc trzeba usunąć klasę
+        this.removeClass('error');
+        // oraz komunikat
+        this.next().remove();
+    }
+    // Jest tu jeszcze parametr lang np. `lang: 'ru'`
+    // ale nie trzeba o nim pamiętać
+    // domyślnie jest brany z atrybutu `lang` w tagu <html>
 });
 ```
 
@@ -58,7 +58,7 @@ Teraz wystarczy tylko użyć atrybutu `data-regex` podając wcześniej zdefiniow
 Możemy też tworzyć własne funkcje, które sprawdzą poprawność inputa:
 ```js
 $.Valider.addFilter('[data-not]', function(input, val) {
-	return $.inArray(val, input.data('not').split(',')) === -1;
+    return $.inArray(val, input.data('not').split(',')) === -1;
 });
 ```
 ```html
@@ -68,21 +68,24 @@ $.Valider.addFilter('[data-not]', function(input, val) {
 Trzeba również pamiętać o komunikatach, tak więc dodajmy dwa do powyższych przykładów:
 ```js
 $.Valider.addLang({
-		'pl': {
-			'regex:binary': 'Niepoprawny kod binarny',
-			'[data-not]': 'Wymyśl jakiś lepszy login'
-		},
-		'en': {
-			'regex:binary': 'Invalid binary code',
-			'[data-not]': 'Think of a better login'
-		}
-	})
+        'pl': {
+            'regex:binary': 'Niepoprawny kod binarny',
+            '[data-not]': 'Wymyśl jakiś lepszy login'
+        },
+        'en': {
+            'regex:binary': 'Invalid binary code',
+            '[data-not]': 'Think of a better login'
+        }
+    })
 ```
 
 ## License
 Valider is open-sourced software licensed under the MIT License.
 
 ## Changelog
+
+### 1.2.1
+- Fix: Teraz komunikaty przy `.invalidate(errors)` znikają jak nie podano
 
 ### 1.2.0
 - Walidacja teraz jest również przy "on change"
