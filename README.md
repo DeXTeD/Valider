@@ -84,7 +84,10 @@ Valider is open-sourced software licensed under the MIT License.
 
 ## Changelog
 
-### 1.2.1
+### 1.2.3
+- Fix: Filtrowanie inputów po nazwie może spowodować błędy
+
+### 1.2.2
 - Fix: Teraz komunikaty przy `.invalidate(errors)` znikają jak nie podano
 
 ### 1.2.0

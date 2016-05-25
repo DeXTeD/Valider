@@ -127,7 +127,7 @@
                 return val === '' || this.regex[input.data('regex')].test(val);
             },
             '[data-equals]': function (input, val) {
-                var input2 = this.inputs.filter('[name=' + input.data('equals') + ']');
+                var input2 = this.inputs.filter('[name="' + input.data('equals') + '"]');
                 return val === input2.val();
             },
             '[data-limit]': function (input, val) {
@@ -278,12 +278,12 @@
 
             if (this.lastInvalidateErrors) {
                 $.each(this.lastInvalidateErrors, function (key, value) {
-                    self.callInputPass(inputs.filter('[name=' + key + ']'));
+                    self.callInputPass(inputs.filter('[name="' + key + '"]'));
                 });
             }
 
             $.each(errors, function (key, value) {
-                self.callInputError(false, inputs.filter('[name=' + key + ']'), value);
+                self.callInputError(false, inputs.filter('[name="' + key + '"]'), value);
             });
 
             this.lastInvalidateErrors = errors;
